@@ -15,6 +15,9 @@ from datetime import datetime
 from typing import List
 
 import pandas as pd
+import matplotlib
+matplotlib.use("Agg")  # non-interactive backend for server environments
+import matplotlib.pyplot as plt
 
 # -------------------------
 # Constants
@@ -259,6 +262,35 @@ def parse_doc(path):
     return data
 
 
+# -------------------------
+# Chart helpers
+# -------------------------
+def _make_chart_image(summary_df, family):
+    """
+    Generate a bar chart for a given code family and return it as
+    PNG bytes (in-memory, no disk I/O).
+    Returns None if there is no data for the family.
+    """
+    sub = (
+        summary_df[summary_df["family"] == family]
+        if not summary_df.empty
+        else pd.DataFrame()
+    )
+    if sub.empty:
+        return None
+    fig, ax = plt.subplots(figsize=(6, 3))
+    ax.bar(sub["code"], sub["count"])
+    ax.set_title(f"{family} distribution")
+    ax.set_xlabel("Code")
+    ax.set_ylabel("Count")
+    fig.tight_layout()
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png")
+    plt.close(fig)
+    buf.seek(0)
+    return buf
+
+
 # ============================================================
 # PUBLIC API
 # ============================================================
@@ -269,7 +301,7 @@ def process_files(file_paths: List[str]) -> bytes:
 
     Sheets: master_rows, file_level_extraction, pivot_pathway_uoa,
             summary_counts, counts_by_file, distinct_staff_counts,
-            codes_by_uoa, codes_by_pathway.
+            codes_by_uoa, codes_by_pathway, charts.
     """
     records = []
     for fpath in file_paths:
@@ -392,14 +424,19 @@ def process_files(file_paths: List[str]) -> bytes:
             diagnostics["uoa"].fillna("").apply(lambda x: x == "")
         )
 
+    # ---- Generate chart images (in-memory) ----
+    chart_images = {}  # family -> BytesIO
+    for family in ["SPRE", "STAGE", "PARTNER"]:
+        img_buf = _make_chart_image(summary, family)
+        if img_buf is not None:
+            chart_images[family] = img_buf
+
     # ---- Write Excel to in-memory buffer ----
     buf = io.BytesIO()
     with pd.ExcelWriter(buf, engine="xlsxwriter") as writer:
         summary.to_excel(writer, sheet_name="summary_counts", index=False)
         counts_by_file.to_excel(writer, sheet_name="counts_by_file", index=False)
-        distinct_staff.to_excel(
-            writer, sheet_name="distinct_staff_counts", index=False
-        )
+        distinct_staff.to_excel(writer, sheet_name="distinct_staff_counts", index=False)
         codes_by_uoa.to_excel(writer, sheet_name="codes_by_uoa", index=False)
         codes_by_pathway.to_excel(writer, sheet_name="codes_by_pathway", index=False)
         df.to_excel(writer, sheet_name="master_rows", index=False)
@@ -408,5 +445,20 @@ def process_files(file_paths: List[str]) -> bytes:
         )
         if not pivot_by_pathway_uoa.empty:
             pivot_by_pathway_uoa.to_excel(writer, sheet_name="pivot_pathway_uoa")
+
+        # ---- Charts sheet (embedded PNGs) ----
+        if chart_images:
+            wb = writer.book
+            ws = wb.add_worksheet("charts")
+            writer.sheets["charts"] = ws
+            row_pos = 1
+            for family in ["SPRE", "STAGE", "PARTNER"]:
+                if family in chart_images:
+                    ws.insert_image(
+                        row_pos, 1,
+                        f"{family}.png",
+                        {"image_data": chart_images[family]},
+                    )
+                    row_pos += 20  # leave space between charts
 
     return buf.getvalue()
