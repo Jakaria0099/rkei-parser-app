@@ -32,6 +32,30 @@ st.markdown(
     """
 )
 
+st.info(
+    "📖 **New here?** Please download and read the user guide below before using this tool."
+)
+
+
+@st.cache_data
+def _load_readme() -> str:
+    try:
+        with open("README.md", "r", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        return ""
+
+
+_readme_content = _load_readme()
+
+if _readme_content:
+    st.download_button(
+        label="📥 Download User Guide",
+        data=_readme_content,
+        file_name="RKEI_Form_Processor_User_Guide.md",
+        mime="text/markdown",
+    )
+
 st.divider()
 
 uploaded_files = st.file_uploader(
