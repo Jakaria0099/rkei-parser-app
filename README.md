@@ -12,7 +12,7 @@ Instead of manually opening dozens of Word forms, copying data into spreadsheets
 
 ## 🤔 Why Does This Exist?
 
-RKEI forms contain structured data across multiple tables : staff details, research priorities, bids, events, engagement activities, and impact entries — each tagged with specific codes (SPRE, Stage, Partner type).
+RKEI forms contain structured data across multiple tables : staff details, research priorities, bids, events, engagement activities, and impact entries, each tagged with specific codes (SPRE, Stage, Partner type).
 
 Manually consolidating this information from many forms is:
 
