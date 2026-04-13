@@ -1,4 +1,4 @@
-# RKEI Form Processor — User Documentation
+# RKEI Form Processor User Documentation
 
 ---
 
