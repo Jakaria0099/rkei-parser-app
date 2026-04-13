@@ -49,13 +49,15 @@ CODE_MEANINGS = {
 }
 
 # Table indexes (template-based; adjust if your template differs)
+# Updated for V3 form: 3 new reference/explanation tables were added at the
+# top of the document (Tables 1-3), shifting all subsequent indexes by +3.
 TABLE_IDX = {
-    "staff": 3,
-    "priorities": 5,
-    "bids": 9,
-    "events": 11,
-    "engagement": 12,
-    "impact": 13,
+    "staff": 6,
+    "priorities": 8,
+    "bids": 12,
+    "events": 14,
+    "engagement": 15,
+    "impact": 16,
 }
 
 # -------------------------
