@@ -48,10 +48,18 @@ CODE_MEANINGS = {
     "NON": "Non-profit",
 }
 
-# Table indexes (template-based; adjust if your template differs)
-# Updated for V3 form: 3 new reference/explanation tables were added at the
-# top of the document (Tables 1-3), shifting all subsequent indexes by +3.
-TABLE_IDX = {
+# Table indexes for the original form template
+_TABLE_IDX_OLD = {
+    "staff": 3,
+    "priorities": 5,
+    "bids": 9,
+    "events": 11,
+    "engagement": 12,
+    "impact": 13,
+}
+
+# Table indexes for the updated template (V3+: 3 reference tables inserted at top)
+_TABLE_IDX_NEW = {
     "staff": 6,
     "priorities": 8,
     "bids": 12,
@@ -59,6 +67,28 @@ TABLE_IDX = {
     "engagement": 15,
     "impact": 16,
 }
+
+def _detect_table_idx(tables):
+    """
+    Auto-detect old vs new template by checking whether the staff table header
+    (Name | Position | Department ...) sits at index 6 (new) or 3 (old).
+    This means old and new format forms can be processed together in one batch.
+    """
+    def _header_text(tbl):
+        rows = tbl.findall(".//w:tr", NS)
+        if not rows:
+            return ""
+        return " ".join(
+            t.text for tc in rows[0].findall(".//w:tc", NS)
+            for t in tc.findall(".//w:t", NS) if t.text
+        ).lower()
+
+    try:
+        if len(tables) > 6 and "name" in _header_text(tables[6]) and "position" in _header_text(tables[6]):
+            return _TABLE_IDX_NEW
+    except Exception:
+        pass
+    return _TABLE_IDX_OLD
 
 # -------------------------
 # XML helpers
@@ -146,6 +176,7 @@ def normalize_staff_vals(staff_vals):
 def parse_doc(path):
     root = get_root(path)
     tables = root.findall(".//w:tbl", NS)
+    TABLE_IDX = _detect_table_idx(tables)
     fname = os.path.basename(path)
 
     def cells(r):
