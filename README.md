@@ -6,19 +6,19 @@
 
 The **RKEI Form Processor** is a web-based tool that reads your completed **RKEI Word (.docx) forms** and automatically extracts all the key data into a single, clean **Excel spreadsheet** called `SPRE_CodedReturns_REF2029.xlsx`.
 
-Instead of manually opening dozens of Word forms, copying data into spreadsheets, and cross-referencing codes — this tool does it all for you in seconds.
+Instead of manually opening dozens of Word forms, copying data into spreadsheets, and cross-referencing codes, this tool does it all for you in seconds.
 
 ---
 
 ## 🤔 Why Does This Exist?
 
-RKEI forms contain structured data across multiple tables — staff details, research priorities, bids, events, engagement activities, and impact entries — each tagged with specific codes (SPRE, Stage, Partner type).
+RKEI forms contain structured data across multiple tables : staff details, research priorities, bids, events, engagement activities, and impact entries — each tagged with specific codes (SPRE, Stage, Partner type).
 
 Manually consolidating this information from many forms is:
 
-- **Time-consuming** — each form has multiple tables with dropdowns and codes.
-- **Error-prone** — easy to misread or skip entries.
-- **Hard to summarise** — turning raw form data into useful summaries and pivot tables takes extra work.
+- **Time-consuming**, each form has multiple tables with dropdowns and codes.
+- **Error-prone**, easy to misread or skip entries.
+- **Hard to summarise**, turning raw form data into useful summaries and pivot tables takes extra work.
 
 This tool **automates the entire process**. Upload your `.docx` files, click a button, and get a fully structured Excel workbook with summaries, breakdowns, pivot tables, and charts — ready for analysis or reporting.
 
@@ -31,7 +31,7 @@ Behind the scenes the tool:
 1. **Reads** each uploaded `.docx` file by inspecting the underlying XML (the same data Word uses internally).
 2. **Locates** the specific tables in the RKEI template (Staff, Priorities, Bids, Events, Engagement, Impact).
 3. **Extracts** all dropdown selections, free-text entries, and codes from each table row.
-4. **Normalises** the data — for example, detecting and separating dates that may appear in unexpected positions in the staff row.
+4. **Normalises** the data. for example, detecting and separating dates that may appear in unexpected positions in the staff row.
 5. **Aggregates** everything into multiple Excel sheets with summaries, pivot tables, and charts.
 6. **Packages** it all into a single downloadable `.xlsx` file.
 
@@ -39,19 +39,19 @@ Behind the scenes the tool:
 
 ## 🚀 How To Use It
 
-### Step 1 — Open the App
+### Step 1 : Open the App
 
 Visit the app URL in your web browser. No installation or login is required.
 
-### Step 2 — Upload Your Forms
+### Step 2 : Upload Your Forms
 
 Click **Browse files** (or drag and drop) to select one or more `.docx` RKEI forms. You can upload as many files as you like at once.
 
-### Step 3 — Process
+### Step 3 : Process
 
 Click the **▶ Process** button. The app will read all uploaded forms and generate the Excel output. This usually takes just a few seconds.
 
-### Step 4 — Download
+### Step 4 : Download
 
 Once processing is complete, click **⬇ Download Excel**. The file will be saved to your computer as:
 
